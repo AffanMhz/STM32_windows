@@ -1,10 +1,41 @@
-STM32 Blue Pill Bootloader Setup Guide for WindowsProfessional Windows Configuration ManualComplete guide for configuring bootloader on STM32F103C8T6 microcontrollerTable of ContentsOverviewPrerequisitesHardware SetupSoftware InstallationBootloader Flash ProcedureBootloader VerificationTroubleshooting GuideAdditional Resources<a name="overview"></a>OverviewThe STM32F103C8T6 "Blue Pill" development board requires proper bootloader configuration to enable USB programming and debugging capabilities. This guide provides comprehensive instructions for Windows users to configure the bootloader using official STMicroelectronics tools and protocols.Important NoticeThis procedure involves flashing firmware to the microcontroller's system memory. Incorrect implementation may render the device inoperable. Ensure all connections are verified before proceeding.<a name="prerequisites"></a>PrerequisitesSystem RequirementsWindows 10/11 (64-bit recommended)Administrator privileges for driver installationUSB 2.0 or higher portInternet connection for software downloadsHardware ListSTM32F103C8T6 Blue Pill: Primary development board with ARM Cortex-M3 processorST-Link V2 Programmer: Official STMicroelectronics debugging interfaceDupont Jumper Wires: Female-to-female connections for SWD interfaceUSB-A to Mini-B Cable: For ST-Link programmer connectivity<a name="hardware"></a>Hardware ConfigurationStep 1: SWD Interface ConnectionEstablish Serial Wire Debug (SWD) connection between ST-Link V2 and Blue Pill:Connection MappingST-Link V2 PinBlue Pill PinFunctionSWDIOPA13Serial Wire Data I/OSWCLKPA14Serial Wire ClockGNDGNDGround Reference3.3V3.3VPower SupplyStep 2: Boot ConfigurationConfigure Blue Pill boot mode for System Memory boot:BOOT0 jumper: Position to "1" (3.3V)BOOT1 jumper: Position to "0" (GND)Critical: Verify jumper positions before applying power. Incorrect boot configuration may prevent bootloader access.<a name="software"></a>Software InstallationStep 1: STM32CubeProgrammer InstallationDownload and install the official STMicroelectronics programming utility:Download STM32CubeProgrammerInstallation Path: C:\Program Files\STMicroelectronics\STM32Cube\STM32CubeProgrammer
-Version: Latest stable release (recommended)
-Step 2: ST-Link Driver InstallationInstall official ST-Link USB drivers:Download ST-Link DriversExtract driver package to temporary directoryRun installer with administrator privilegesFollow installation wizard promptsRestart system if promptedStep 3: Bootloader Binary AcquisitionDownload appropriate bootloader firmware:STM32duino BootloaderRecommended: generic_boot20_pc13.bin for Blue Pill with PC13 LED indicator<a name="bootloader"></a>Bootloader Flash ProcedureStep 1: Device Connection VerificationVerify ST-Link connection and target detection:Connect ST-Link V2 to Windows PC via USBConnect Blue Pill to ST-Link via SWD interfaceLaunch STM32CubeProgrammerSelect "ST-LINK" connection interfaceClick "Connect" to establish communicationSuccess Indicator: Status displays "Connected" with device information showing STM32F103C8Step 2: Memory Sector PreparationPrepare flash memory for bootloader installation:Navigate to "Erasing & Programming" tabSelect "Full chip erase" optionClick "Start Programming" to erase existing firmwareWait for completion confirmationExpected Output:
-Memory erased successfully
-Flash memory cleared: 0x08000000 to 0x0800FFFF
-Step 3: Bootloader Flash ProgrammingProgram bootloader binary to flash memory:Click "Browse" to select bootloader binary fileSet start address to: 0x08000000Verify file path and addressingClick "Start Programming" to flash bootloaderMonitor progress indicator until completionProgramming Complete: File download completed successfullyStep 4: Boot Configuration ResetRestore normal boot configuration:Power down Blue Pill boardBOOT0 jumper: Position to "0" (GND)BOOT1 jumper: Maintain at "0" (GND)Disconnect ST-Link SWD connectionsPower up Blue Pill via USB connection<a name="verification"></a>Bootloader VerificationStep 1: USB Device RecognitionVerify bootloader USB enumeration:Connect Blue Pill to PC via USB cableOpen Windows Device ManagerLocate "Universal Serial Bus devices"Verify "STM32 BOOTLOADER" or "Maple DFU" deviceSuccess: Device appears without error indicators in Device ManagerStep 2: DFU Mode VerificationTest Device Firmware Update (DFU) functionality:dfu-util -l
 
-Expected Output:
-Found DFU: [1eaf:0003] ver=0201, devnum=XX, cfg=1, intf=0, path="X-X", alt=2, name="STM32duino bootloader v1.0  Upload to Flash 0x8002000", serial="LLM 003"
-Step 3: LED Indicator TestVerify bootloader LED functionality:Power-on LED (PC13): Should blink rapidly during boot sequenceBootloader timeout: LED should stabilize after 8 secondsDFU mode indication: LED remains active during programming<a name="troubleshooting"></a>Troubleshooting GuideConnection IssuesProblem: ST-Link cannot detect target deviceSolution:Verify SWD pin connections and continuityCheck power supply voltage (3.3V nominal)Ensure BOOT0 jumper is correctly positionedTry different USB port or cableProgramming FailuresProblem: Flash programming errors or verification failuresSolution:Perform full chip erase before programmingVerify bootloader binary integrityCheck for counterfeit microcontroller chipsReduce SWD interface speed in programmer settingsUSB Recognition ProblemsProblem: Windows does not recognize bootloader deviceSolution:Install or update USB driversTry different USB ports (avoid USB hubs)Check cable integrity and connectionsVerify bootloader was programmed correctlyRecovery ProceduresIf the device becomes unresponsive, recovery is possible through SWD interface using ST-Link programmer. The bootloader can be re-flashed following the same procedure outlined in this guide.<a name="resources"></a>Additional ResourcesSTM32F103C8T6 Reference ManualSTM32CubeProgrammer User ManualST-Link V2 DocumentationSTM32duino Project DocumentationTechnical SupportFor technical assistance, consult STMicroelectronics official documentation or community forums. Ensure proper ESD precautions when handling microcontroller boards.
+---
+
+### Step 3: Flash Bootloader Binary
+
+1. Click **Browse** and select `generic_boot20_pc13.bin`  
+2. Set start address: `0x08000000`  
+3. Click **Start Programming**  
+4. Monitor progress
+
+✅ *Programming Complete*: “File download completed successfully”
+
+---
+
+### Step 4: Reset Boot Configuration
+
+1. Power down Blue Pill  
+2. Set **BOOT0** jumper to `0` (GND)  
+3. Keep **BOOT1** at `0` (GND)  
+4. Disconnect ST-Link  
+5. Power Blue Pill via USB
+
+---
+
+## <a name="bootloader-verification"></a>Bootloader Verification
+
+### Step 1: USB Device Recognition
+
+- Connect Blue Pill to PC via USB  
+- Open **Device Manager**  
+- Check under **Universal Serial Bus Devices**
+
+✅ *Success*: Device shows as `STM32 BOOTLOADER` or `Maple DFU` with no errors
+
+---
+
+### Step 2: DFU Mode Verification
+
+Run the command:
+```bash
+dfu-util -l
