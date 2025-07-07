@@ -1,6 +1,4 @@
-Here's the properly formatted markdown file with syntax conflicts resolved and improved structure:
 
-```markdown
 # STM32 Blue Pill Bootloader Setup Guide for Windows
 **Professional Windows Configuration Manual**  
 Complete guide for configuring bootloader on STM32F103C8T6 microcontroller
@@ -192,4 +190,3 @@ Configure Blue Pill boot mode:
 
 > **Technical Support**  
 > For assistance, consult STMicroelectronics official forums with detailed error reports.
-```
